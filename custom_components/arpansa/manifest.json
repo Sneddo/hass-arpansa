@@ -1,0 +1,8 @@
+{
+	"domain": "arpansa",
+	"name": "ARPANSA UV Index",
+	"documentation": "https://github.com/Sneddo/hass-arpansa",
+	"dependencies": [],
+	"codeowners": ["@Sneddo"],
+	"requirements": []
+}
