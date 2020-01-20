@@ -1,7 +1,10 @@
-
-""" ARPANSA UV Index"""
+""" 
+ARPANSA UV Index
+"""
 import requests
 import xml.etree.ElementTree
+
+import logging
 
 from homeassistant.const import (
      ATTR_FRIENDLY_NAME, CONF_NAME, CONF_LATITUDE, CONF_LONGITUDE)
@@ -18,8 +21,20 @@ LOCATION_LAT_LON = {
     'Alice Springs': [-23.6993534,133.8757526]
 }
 
+_LOGGER = logging.getLogger(__name__)
+
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
+
+    latitude = config.get(CONF_LATITUDE, hass.config.latitude)
+    longitude = config.get(CONF_LONGITUDE, hass.config.longitude)
+
+    _LOGGER.debug(
+        "latitude=%s, longitude=%s",
+        latitude,
+        longitude,
+    )
+    _LOGGER.debug("station=%s", closest_location(latitude,longitude))
     add_entities([ARPANSASensor()])
 
 
@@ -33,7 +48,7 @@ class ARPANSASensor(Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return 'Example Temperature'
+        return 'ARPANSA UV Index'
 
     @property
     def state(self):
@@ -47,9 +62,8 @@ class ARPANSASensor(Entity):
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
-        """Fetch new state data for the sensor.
-        This is the only method that should fetch new data for Home Assistant.
-        """
+        """Fetch new state data for the sensor. """
+        response = requests.get(ARPANSA_DATA_URL)
         self._state = 23
 
 
